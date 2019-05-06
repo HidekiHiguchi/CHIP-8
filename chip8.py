@@ -1,0 +1,69 @@
+
+memory = [] # memória total 2096
+op = 0 # operation code
+v = [] # registradores de uso geral 16
+gfx = [] # gráfico
+
+i = 0 # index register
+pc = 512  # program counter 0x200
+
+delay = '' #limitar 60 operacoes por segundo
+sound_timer = '' # executar som quando o timer chegar a zero
+
+stack = [] # stack 16 gravar posiçâo quando ocorrer um jump
+sp = 0 # stack pointer
+
+key = [] #keymap 0x0-0xF
+
+fontset  = [0xF0, 0x90, 0x90, 0x90, 0xF0,
+            0x20, 0x60, 0x20, 0x20, 0x70,
+            0xF0, 0x10, 0xF0, 0x80, 0xF0,
+            0xF0, 0x10, 0xF0, 0x10, 0xF0,
+            0x90, 0x90, 0xF0, 0x10, 0x10,
+            0xF0, 0x80, 0xF0, 0x10, 0xF0,
+            0xF0, 0x80, 0xF0, 0x90, 0xF0,
+            0xF0, 0x10, 0x20, 0x40, 0x40,
+            0xF0, 0x90, 0xF0, 0x90, 0xF0,
+            0xF0, 0x90, 0xF0, 0x10, 0xF0,
+            0xF0, 0x90, 0xF0, 0x90, 0x90,
+            0xE0, 0x90, 0xE0, 0x90, 0xE0,
+            0xF0, 0x80, 0x80, 0x80, 0xF0,
+            0xE0, 0x90, 0x90, 0x90, 0xE0,
+            0xF0, 0x80, 0xF0, 0x80, 0xF0,
+            0xF0, 0x80, 0xF0, 0x80, 0x80]
+
+
+def init():
+    #inicializa memória
+    for index in range(2096):
+        memory.append(0)
+
+    #carrega fontsets na memória
+    for font in range(len(fontset)):
+        memory[i] = font
+
+    # carrega programa na memória
+    romdata = open('random.ch8', 'rb').read()
+    for index, val in enumerate(romdata):
+        memory[512 + index] = val
+
+def emulate():
+
+    opcode = memory[pc] << 8 | memory[pc + 1]
+
+    opcode = (opcode & 0xF000)
+
+    if(opcode == 0x0000):
+        print("Clean display")
+    
+    elif(opcode == 0x00EE):
+        print("returns from subroutine")
+
+    else:
+        print("Unknown: 0x"+str(opcode)+"\n")
+
+
+    
+
+init()
+emulate()
